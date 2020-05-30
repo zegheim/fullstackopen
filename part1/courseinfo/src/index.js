@@ -3,10 +3,18 @@ import ReactDOM from "react-dom";
 
 const Header = (props) => <h1>{props.title}</h1>;
 
-const Content = (props) => (
+const Part = (props) => (
   <p>
     {props.title} {props.amount}
   </p>
+);
+
+const Content = (props) => (
+  <>
+    <Part title={props.title1} amount={props.amount1} />
+    <Part title={props.title2} amount={props.amount2} />
+    <Part title={props.title3} amount={props.amount3} />
+  </>
 );
 
 const Total = (props) => <p>Number of exercises {props.amount}</p>;
@@ -23,9 +31,14 @@ const App = () => {
   return (
     <>
       <Header title={course} />
-      <Content title={part1} amount={exercises1} />
-      <Content title={part2} amount={exercises2} />
-      <Content title={part3} amount={exercises3} />
+      <Content
+        title1={part1}
+        amount1={exercises1}
+        title2={part2}
+        amount2={exercises2}
+        title3={part3}
+        amount3={exercises3}
+      />
       <Total amount={exercises1 + exercises2 + exercises3} />
     </>
   );
