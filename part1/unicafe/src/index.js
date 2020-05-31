@@ -6,9 +6,10 @@ const Header = (props) => <h1>{props.title}</h1>;
 const Button = (props) => <button onClick={props.onClick}>{props.text}</button>;
 
 const Statistic = (props) => (
-  <p>
-    {props.text} {props.value}
-  </p>
+  <tr>
+    <td>{props.text}</td>
+    <td>{props.value}</td>
+  </tr>
 );
 
 const Statistics = (props) => {
@@ -23,14 +24,16 @@ const Statistics = (props) => {
   const pct = (100 * good) / all;
 
   return (
-    <div>
-      <Statistic text="good" value={good} />
-      <Statistic text="neutral" value={neutral} />
-      <Statistic text="bad" value={bad} />
-      <Statistic text="all" value={all} />
-      <Statistic text="average" value={avg} />
-      <Statistic text="positive" value={pct + "%"} />
-    </div>
+    <table>
+      <tbody>
+        <Statistic text="good" value={good} />
+        <Statistic text="neutral" value={neutral} />
+        <Statistic text="bad" value={bad} />
+        <Statistic text="all" value={all} />
+        <Statistic text="average" value={avg} />
+        <Statistic text="positive" value={pct + "%"} />
+      </tbody>
+    </table>
   );
 };
 
