@@ -14,8 +14,14 @@ const Statistic = (props) => (
 const Statistics = (props) => {
   const { good, neutral, bad } = props;
   const all = good + neutral + bad;
-  const avg = all ? (good - bad) / all : 0;
-  const pct = all ? (100 * good) / all : 0;
+
+  if (!all) {
+    return <p>No feedback given</p>;
+  }
+
+  const avg = (good - bad) / all;
+  const pct = (100 * good) / all;
+
   return (
     <div>
       <Statistic type="good" count={good} />
