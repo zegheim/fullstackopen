@@ -1,17 +1,36 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+const Header = (props) => <h1>{props.title}</h1>;
+
+const Button = (props) => <button onClick={props.onClick}>{props.text}</button>;
+
+const Statistic = (props) => (
+  <p>
+    {props.type} {props.count}
+  </p>
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const App = () => {
+  // save clicks of each button to own state
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const handleClick = (state, setState) => () => setState(state + 1);
+
+  return (
+    <>
+      <Header title="give feedback" />
+      <Button onClick={handleClick(good, setGood)} text="good" />
+      <Button onClick={handleClick(neutral, setNeutral)} text="neutral" />
+      <Button onClick={handleClick(bad, setBad)} text="bad" />
+      <Header title="statistics" />
+      <Statistic type="good" count={good} />
+      <Statistic type="neutral" count={neutral} />
+      <Statistic type="bad" count={bad} />
+    </>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById("root"));
