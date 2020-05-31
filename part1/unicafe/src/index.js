@@ -17,6 +17,10 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
+  const all = good + neutral + bad;
+  const avg = all ? (good - bad) / all : 0;
+  const pos = all ? (100 * good) / all : 0;
+
   const handleClick = (state, setState) => () => setState(state + 1);
 
   return (
@@ -29,6 +33,9 @@ const App = () => {
       <Statistic type="good" count={good} />
       <Statistic type="neutral" count={neutral} />
       <Statistic type="bad" count={bad} />
+      <Statistic type="all" count={all} />
+      <Statistic type="average" count={avg} />
+      <Statistic type="positive" count={pos + "%"} />
     </>
   );
 };
