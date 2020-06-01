@@ -21,11 +21,7 @@ const Total = (props) => {
     (sum, part) => sum + part.exercises,
     0
   );
-  return (
-    <p>
-      <strong>total of {total} exercises</strong>
-    </p>
-  );
+  return <strong>total of {total} exercises</strong>;
 };
 const Course = ({ course }) => (
   <>
