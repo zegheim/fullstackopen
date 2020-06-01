@@ -1,43 +1,41 @@
 import React, { useState } from "react";
+import Form from "./components/Form";
+import Phonebook from "./components/Phonebook";
 
-const App = () => {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
+const App = (props) => {
+  const [persons, setPersons] = useState(props.persons);
   const [newName, setNewName] = useState("");
+  const [newNum, setNewNum] = useState("");
 
   const isDifferentFrom = (target) => (ref) => ref.name !== target;
 
+  const handleInputChange = (setter) => (event) => setter(event.target.value);
+
   const addPerson = (event) => {
     event.preventDefault();
-
     const isUnique = persons.every(isDifferentFrom(newName));
     if (isUnique) {
-      const person = { name: newName };
+      const person = { name: newName, number: newNum };
       setPersons(persons.concat(person));
       setNewName("");
+      setNewNum("");
     } else {
       alert(`${newName} is already added to phonebook`);
     }
   };
 
-  const handleFormChange = (event) => {
-    setNewName(event.target.value);
-  };
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input onChange={handleFormChange} value={newName} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Form
+        onSubmit={addPerson}
+        onNameChange={handleInputChange(setNewName)}
+        onNumChange={handleInputChange(setNewNum)}
+        newName={newName}
+        newNum={newNum}
+      />
       <h2>Numbers</h2>
-      {persons.map((person) => (
-        <p key={person.name}>{person.name}</p>
-      ))}
+      <Phonebook persons={persons} />
     </div>
   );
 };
