@@ -26,6 +26,10 @@ const App = (props) => {
     }
   };
 
+  const filteredPersons = persons.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -43,11 +47,7 @@ const App = (props) => {
         newNum={newNum}
       />
       <h2>Numbers</h2>
-      <Phonebook
-        persons={persons.filter((p) =>
-          p.name.toLowerCase().includes(search.toLowerCase())
-        )}
-      />
+      <Phonebook persons={filteredPersons} />
     </div>
   );
 };
