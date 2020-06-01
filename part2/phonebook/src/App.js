@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Form from "./components/Form";
+import Input from "./components/Input";
 import Phonebook from "./components/Phonebook";
 
 const App = (props) => {
   const [persons, setPersons] = useState(props.persons);
   const [newName, setNewName] = useState("");
   const [newNum, setNewNum] = useState("");
+  const [search, setSearch] = useState("");
 
   const isDifferentFrom = (target) => (ref) => ref.name !== target;
 
@@ -27,6 +29,12 @@ const App = (props) => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Input
+        label="filter shown with"
+        onChange={handleInputChange(setSearch)}
+        value={search}
+      />
+      <h2>Add new</h2>
       <Form
         onSubmit={addPerson}
         onNameChange={handleInputChange(setNewName)}
@@ -35,7 +43,11 @@ const App = (props) => {
         newNum={newNum}
       />
       <h2>Numbers</h2>
-      <Phonebook persons={persons} />
+      <Phonebook
+        persons={persons.filter((p) =>
+          p.name.toLowerCase().includes(search.toLowerCase())
+        )}
+      />
     </div>
   );
 };

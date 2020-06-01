@@ -1,10 +1,5 @@
 import React from "react";
-
-const Input = (props) => (
-  <div>
-    {props.label}: <input onChange={props.onChange} value={props.value} />
-  </div>
-);
+import Input from "./Input";
 
 const Form = (props) => (
   <form onSubmit={props.onSubmit}>
