@@ -18,6 +18,10 @@ const App = () => {
 
   const handleInputChange = (setter) => (event) => setter(event.target.value);
 
+  const filteredPersons = persons.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   const addPerson = (event) => {
     event.preventDefault();
 
@@ -33,10 +37,6 @@ const App = () => {
       alert(`${newName} is already added to phonebook`);
     }
   };
-
-  const filteredPersons = persons.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
 
   return (
     <div>
