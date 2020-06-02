@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+
 import Form from "./components/Form";
 import Input from "./components/Input";
 import Phonebook from "./components/Phonebook";
+
+import personService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,25 +12,23 @@ const App = () => {
   const [newNum, setNewNum] = useState("");
   const [search, setSearch] = useState("");
 
-  const hook = () => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((response) => setPersons(response.data));
-  };
-  useEffect(hook, []);
+  useEffect(() => {
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+  }, []);
 
   const handleInputChange = (setter) => (event) => setter(event.target.value);
 
   const addPerson = (event) => {
     event.preventDefault();
 
-    const isDifferentFrom = (target) => (ref) => ref.name !== target;
-    const isUnique = persons.every(isDifferentFrom(newName));
+    const isUnique = persons.every((p) => p.name !== newName);
     if (isUnique) {
       const person = { name: newName, number: newNum };
-      setPersons(persons.concat(person));
-      setNewName("");
-      setNewNum("");
+      personService.create(person).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNum("");
+      });
     } else {
       alert(`${newName} is already added to phonebook`);
     }
