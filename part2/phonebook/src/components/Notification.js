@@ -1,6 +1,8 @@
 import React from "react";
 
 const Notification = ({ message }) =>
-  message === null ? null : <div className="success">{message}</div>;
+  message.content === null ? null : (
+    <div className={`notification ${message.type}`}>{message.content}</div>
+  );
 
 export default Notification;
