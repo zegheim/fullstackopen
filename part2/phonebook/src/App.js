@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import Form from "./components/Form";
 import Input from "./components/Input";
+import Notification from "./components/Notification";
 import Phonebook from "./components/Phonebook";
 
 import personService from "./services/persons";
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNum, setNewNum] = useState("");
   const [search, setSearch] = useState("");
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     personService
@@ -27,12 +29,16 @@ const App = () => {
   const addPerson = (newPerson) => {
     personService.createEntry(newPerson).then((returnedPerson) => {
       setPersons(persons.concat(returnedPerson));
+      setNotification(`Added ${returnedPerson.name}`);
+      setTimeout(() => setNotification(null), 1500);
     });
   };
 
   const updatePerson = (id, person) => {
     personService.updateEntry(id, person).then((returnedPerson) => {
       setPersons(persons.map((p) => (p.id !== id ? p : returnedPerson)));
+      setNotification(`Updated ${returnedPerson.name}'s number`);
+      setTimeout(() => setNotification(null), 1500);
     });
   };
 
@@ -62,7 +68,6 @@ const App = () => {
         updatePerson(existingPerson.id, person);
       }
     }
-
     setNewName("");
     setNewNum("");
   };
@@ -70,6 +75,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} />
       <Input
         label="filter shown with"
         onChange={handleInputChange(setSearch)}
