@@ -6,6 +6,6 @@ const Entry = (props) => (
   </p>
 );
 const Phonebook = (props) =>
-  props.persons.map((person) => <Entry key={person.number} person={person} />);
+  props.persons.map((person) => <Entry key={person.id} person={person} />);
 
 export default Phonebook;

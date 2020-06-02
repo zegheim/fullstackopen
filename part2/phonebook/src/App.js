@@ -1,20 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Form from "./components/Form";
 import Input from "./components/Input";
 import Phonebook from "./components/Phonebook";
 
-const App = (props) => {
-  const [persons, setPersons] = useState(props.persons);
+const App = () => {
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNum, setNewNum] = useState("");
   const [search, setSearch] = useState("");
 
-  const isDifferentFrom = (target) => (ref) => ref.name !== target;
+  const hook = () => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then((response) => setPersons(response.data));
+  };
+  useEffect(hook, []);
 
   const handleInputChange = (setter) => (event) => setter(event.target.value);
 
   const addPerson = (event) => {
     event.preventDefault();
+
+    const isDifferentFrom = (target) => (ref) => ref.name !== target;
     const isUnique = persons.every(isDifferentFrom(newName));
     if (isUnique) {
       const person = { name: newName, number: newNum };
