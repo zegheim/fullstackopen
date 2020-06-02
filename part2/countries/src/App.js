@@ -1,25 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Input from "./components/Input";
+import Result from "./components/Result";
 
 function App() {
+  const [search, setSearch] = useState("");
+  const [countries, setCountries] = useState([]);
+
+  const getAllCountries = () => {
+    axios.get("https://restcountries.eu/rest/v2/all").then((response) => {
+      setCountries(response.data);
+    });
+  };
+  useEffect(getAllCountries, []);
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const doesNameInclude = (ref) => (target) =>
+    target.name.toLowerCase().includes(ref.toLowerCase());
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Input
+        text="find countries"
+        value={search}
+        onChange={handleSearchChange}
+      />
+      <Result countries={countries.filter(doesNameInclude(search))} />
+    </>
   );
 }
 
