@@ -24,20 +24,16 @@ const App = () => {
     p.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const addPerson = (event) => {
-    event.preventDefault();
+  const addPerson = (newPerson) => {
+    personService.createEntry(newPerson).then((returnedPerson) => {
+      setPersons(persons.concat(returnedPerson));
+    });
+  };
 
-    const isUnique = persons.every((p) => p.name !== newName);
-    if (isUnique) {
-      const person = { name: newName, number: newNum };
-      personService.createEntry(person).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNum("");
-      });
-    } else {
-      alert(`${newName} is already added to phonebook`);
-    }
+  const updatePerson = (id, person) => {
+    personService.updateEntry(id, person).then((returnedPerson) => {
+      setPersons(persons.map((p) => (p.id !== id ? p : returnedPerson)));
+    });
   };
 
   const deletePerson = (person) => () => {
@@ -50,6 +46,27 @@ const App = () => {
     }
   };
 
+  const addOrUpdatePerson = (event) => {
+    event.preventDefault();
+
+    const person = { name: newName, number: newNum };
+    const existingPerson = persons.find((p) => p.name === newName);
+
+    if (!existingPerson) {
+      addPerson(person);
+    } else {
+      const isUpdateOk = window.confirm(
+        `${newName} is already added to Phonebook, replace the old number with a new one?`
+      );
+      if (isUpdateOk) {
+        updatePerson(existingPerson.id, person);
+      }
+    }
+
+    setNewName("");
+    setNewNum("");
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -60,7 +77,7 @@ const App = () => {
       />
       <h2>Add new</h2>
       <Form
-        onSubmit={addPerson}
+        onSubmit={addOrUpdatePerson}
         onNameChange={handleInputChange(setNewName)}
         onNumChange={handleInputChange(setNewNum)}
         newName={newName}
