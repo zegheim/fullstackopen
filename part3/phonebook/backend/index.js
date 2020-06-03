@@ -19,24 +19,25 @@ app.use(
 
 app.get("/info", (req, res) => {
   const reqDate = new Date();
-  res.send(
-    `<p>Phonebook has info for ${persons.length} people</p> <p>${reqDate}</p>`
-  );
+  Person.countDocuments({}).then((count) => {
+    res.send(`<p>Phonebook has info for ${count} people</p> <p>${reqDate}</p>`);
+  });
 });
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((notes) => res.json(notes));
 });
 
-app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find((p) => p.id === id);
-
-  if (person) {
-    res.json(person);
-  } else {
-    res.status(404).end();
-  }
+app.get("/api/persons/:id", (req, res, next) => {
+  Person.findById(req.params.id)
+    .then((person) => {
+      if (person) {
+        res.json(person);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((err) => next(err));
 });
 
 app.post("/api/persons", (req, res) => {
@@ -61,7 +62,7 @@ app.post("/api/persons", (req, res) => {
   person.save().then((savedPerson) => res.json(savedPerson));
 });
 
-app.put("/api/persons/:id", (req, res) => {
+app.put("/api/persons/:id", (req, res, next) => {
   const body = req.body;
 
   const person = {
@@ -74,7 +75,7 @@ app.put("/api/persons/:id", (req, res) => {
     .catch((err) => next(err));
 });
 
-app.delete("/api/persons/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
     .then((person) => res.status(204).end())
     .catch((err) => next(err));
