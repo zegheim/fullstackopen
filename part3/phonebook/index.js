@@ -26,6 +26,16 @@ let persons = [
   },
 ];
 
+const generateId = (min, max) => {
+  let id;
+
+  do {
+    id = Math.floor(Math.random() * (max - min + 1) + min);
+  } while (persons.map((p) => p.id).includes(id));
+
+  return id;
+};
+
 app.get("/info", (req, res) => {
   const reqDate = new Date();
   res.send(
@@ -46,6 +56,20 @@ app.get("/api/persons/:id", (req, res) => {
   } else {
     res.status(404).end();
   }
+});
+
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(0, 10000),
+  };
+
+  persons = persons.concat(person);
+
+  res.json(person);
 });
 
 app.delete("/api/persons/:id", (req, res) => {
