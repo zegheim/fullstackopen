@@ -42,13 +42,13 @@ app.get("/api/persons/:id", (req, res) => {
 app.post("/api/persons", (req, res) => {
   const body = req.body;
 
-  if (body.name === undefined) {
+  if (!body.name) {
     return res.status(400).json({
       error: "name missing",
     });
   }
 
-  if (body.number === undefined) {
+  if (!body.number) {
     return res.status(400).json({
       error: "number missing",
     });
@@ -68,7 +68,7 @@ app.delete("/api/persons/:id", (req, res) => {
   res.status(204).end();
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
