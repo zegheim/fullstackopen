@@ -9,11 +9,12 @@
     "build:ui": "rm -rf build && cd ../ && yarn run build && cp -r build backend/",
     "deploy": "cd ../../../ && git subtree --prefix=part3/phonebook/backend push heroku-part3-phonebook master",
     "deploy:full": "yarn run build:ui && git commit -am uibuild && yarn run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail --remote heroku-part3-phonebook"
   },
   "author": "Justin Arista Kasin",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "morgan": "^1.10.0"
   },
