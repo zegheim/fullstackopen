@@ -19,7 +19,7 @@ app.use(
 
 app.get("/info", (req, res) => {
   const reqDate = new Date();
-  Person.countDocuments({}).then((count) => {
+  Person.estimatedDocumentCount().then((count) => {
     res.send(`<p>Phonebook has info for ${count} people</p> <p>${reqDate}</p>`);
   });
 });
