@@ -40,12 +40,8 @@ app.get("/api/notes/:id", (req, res, next) => {
     .catch((err) => next(err));
 });
 
-app.post("/api/notes", (req, res) => {
+app.post("/api/notes", (req, res, next) => {
   const body = req.body;
-
-  if (body.content === undefined) {
-    return res.status(400).json({ error: "content missing" });
-  }
 
   const note = new Note({
     content: body.content,
@@ -53,7 +49,11 @@ app.post("/api/notes", (req, res) => {
     date: new Date(),
   });
 
-  note.save().then((savedNote) => res.json(savedNote));
+  note
+    .save()
+    .then((savedNote) => savedNote.toJSON())
+    .then((savedAndFormattedNote) => res.json(savedAndFormattedNote))
+    .catch((err) => next(err));
 });
 
 app.put("/api/notes/:id", (req, res, next) => {
@@ -87,6 +87,8 @@ const errorHandler = (err, req, res, next) => {
 
   if (err.name === "CastError") {
     return res.status(400).send({ error: "malformatted id" });
+  } else if (err.name === "ValidationError") {
+    return res.status(400).json({ error: err.message });
   }
 
   next(err);

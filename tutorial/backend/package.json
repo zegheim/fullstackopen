@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../ && yarn run build && cp -r build backend/",
     "deploy": "cd ../../ && git subtree --prefix=tutorial/backend push heroku-tutorial master",
-    "deploy:full": "yarn run build:ui && git commit -am uibuild && yarn run deploy",
+    "deploy:full": "yarn run build:ui && git add build/ && git commit -m uibuild; git push; yarn run deploy",
     "logs:prod": "heroku logs --tail"
   },
   "author": "Justin Arista Kasin",
