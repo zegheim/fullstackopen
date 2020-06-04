@@ -67,7 +67,15 @@ app.put("/api/persons/:id", (req, res, next) => {
     context: "query",
     new: true,
   })
-    .then((updatedPerson) => res.json(updatedPerson))
+    .then((updatedPerson) => {
+      if (updatedPerson) {
+        res.json(updatedPerson);
+      } else {
+        throw new Error(
+          `Information of ${person.name} has already been removed from server`
+        );
+      }
+    })
     .catch((err) => next(err));
 });
 
@@ -89,6 +97,8 @@ const errorHandler = (err, req, res, next) => {
     return res.status(400).send({ error: "malformatted id" });
   } else if (err.name === "ValidationError") {
     return res.status(400).json({ error: err.message });
+  } else {
+    return res.status(404).json({ error: err.message });
   }
 
   next(err);

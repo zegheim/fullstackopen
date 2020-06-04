@@ -66,12 +66,14 @@ const App = () => {
         clearNotification(1500);
       })
       .catch((error) => {
-        console.log(error.response.data);
         setNotification({
           content: error.response.data.error,
           type: "error",
         });
         clearNotification(1500);
+        if (error.response.status === 404) {
+          setPersons(persons.filter((p) => p.id !== id));
+        }
       });
   };
 
