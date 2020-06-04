@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
+    "dev": "nodemon --inspect index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../ && yarn run build && mv build backend/",
     "deploy": "cd ../../../ && git subtree --prefix=part3/phonebook/backend push heroku-part3-phonebook master",
