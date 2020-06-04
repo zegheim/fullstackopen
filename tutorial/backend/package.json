@@ -9,7 +9,7 @@
     "build:ui": "rm -rf build && cd ../ && yarn run build && mv build backend/",
     "deploy": "cd ../../ && git subtree --prefix=tutorial/backend push heroku-tutorial master",
     "deploy:full": "yarn run build:ui && git add build/ && git commit -m uibuild; git push; yarn run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail --remote heroku-tutorial"
   },
   "author": "Justin Arista Kasin",
   "license": "MIT",
