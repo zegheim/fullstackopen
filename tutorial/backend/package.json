@@ -9,7 +9,8 @@
     "build:ui": "rm -rf build && cd ../ && yarn run build && mv build backend/",
     "deploy": "cd ../../ && git subtree --prefix=tutorial/backend push heroku-tutorial master",
     "deploy:full": "yarn run build:ui && git add build/ && git commit -m uibuild; git push; yarn run deploy",
-    "logs:prod": "heroku logs --tail --remote heroku-tutorial"
+    "logs:prod": "heroku logs --tail --remote heroku-tutorial",
+    "lint": "eslint ."
   },
   "author": "Justin Arista Kasin",
   "license": "MIT",
@@ -21,6 +22,12 @@
   },
   "devDependencies": {
     "eslint": "^7.1.0",
+    "eslint-config-airbnb": "18.1.0",
+    "eslint-config-airbnb-base": "14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "2.5.0",
     "nodemon": "^2.0.4"
   }
 }
