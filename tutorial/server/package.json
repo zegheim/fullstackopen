@@ -6,8 +6,8 @@
     "start": "node index.js",
     "dev": "nodemon --inspect index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -rf build && cd ../client && yarn run build && mv build ../server",
-    "deploy": "cd ../../ && git subtree --prefix=tutorial/server push heroku-tutorial master",
+    "build:ui": "rm -rf build && cd ../ && yarn run build && mv build backend/",
+    "deploy": "cd ../../ && git subtree --prefix=tutorial/backend push heroku-tutorial master",
     "deploy:full": "yarn run build:ui && git add build/ && git commit -m uibuild; git push; yarn run deploy",
     "logs:prod": "heroku logs --tail --remote heroku-tutorial",
     "lint": "eslint ."
