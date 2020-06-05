@@ -1,0 +1,29 @@
+{
+  "name": "phonebook",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon --inspect index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rm -rf build && cd ../ && yarn run build && mv build backend/",
+    "deploy": "cd ../../../ && git subtree --prefix=part3/phonebook/backend push heroku-part3-phonebook master",
+    "deploy:full": "yarn run build:ui && git add build/ && git commit -m uibuild; git push; yarn run deploy",
+    "logs:prod": "heroku logs --tail --remote heroku-part3-phonebook",
+    "lint": "eslint ."
+  },
+  "author": "Justin Arista Kasin",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.17",
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.1.0",
+    "nodemon": "^2.0.4"
+  }
+}

@@ -1,0 +1,7 @@
+POST https://nameless-plains-58361.herokuapp.com/api/persons
+Content-Type: application/json
+
+{
+  "name": "Justin Arista Kasin",
+  "number": "123-4567"
+}
