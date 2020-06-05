@@ -82,7 +82,7 @@ const App = () => {
     if (isDeleteOk) {
       personService
         .deleteEntry(person.id)
-        .then((res) => {
+        .then(() => {
           const remainingPersons = persons.filter((p) => p.id !== person.id);
           setPersons(remainingPersons);
           setNotification({
@@ -91,9 +91,9 @@ const App = () => {
           });
           clearNotification(1500);
         })
-        .catch((e) => {
+        .catch((error) => {
           setNotification({
-            content: `Information of ${person.name} has already been removed from server`,
+            content: error.response.data.error,
             type: "error",
           });
           clearNotification(1500);
