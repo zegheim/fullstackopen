@@ -5,12 +5,12 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon --inspect index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../client && yarn run build && mv build ../server",
     "deploy": "cd ../../ && git subtree --prefix=tutorial/server push heroku-tutorial master",
     "deploy:full": "yarn run build:ui && git add build/ && git commit -m uibuild; git push; yarn run deploy",
     "logs:prod": "heroku logs --tail --remote heroku-tutorial",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "jest --verbose"
   },
   "author": "Justin Arista Kasin",
   "license": "MIT",
@@ -28,6 +28,10 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "2.5.0",
+    "jest": "^26.0.1",
     "nodemon": "^2.0.4"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
