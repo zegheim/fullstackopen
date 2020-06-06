@@ -88,9 +88,9 @@ describe("total likes", () => {
 });
 
 describe("blog with most likes", () => {
-  test("of empty list is null", () => {
+  test("of empty list is empty object", () => {
     const result = listHelper.favouriteBlog(listWithNoBlog);
-    expect(result).toBe(null);
+    expect(result).toEqual({});
   });
 
   test("when list has only one blog equals that blog", () => {
@@ -106,5 +106,22 @@ describe("blog with most likes", () => {
       url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
       likes: 12,
     });
+  });
+});
+
+describe("author with most blogs", () => {
+  test("of empty list is empty object", () => {
+    const result = listHelper.mostBlogs(listWithNoBlog);
+    expect(result).toEqual({});
+  });
+
+  test("when list has only one blog equals the author of that blog (with 1 blog)", () => {
+    const result = listHelper.mostBlogs(listWithOneBlog);
+    expect(result).toEqual({ author: "Michael Chan", blogs: 1 });
+  });
+
+  test("in a bigger list is identified correctly", () => {
+    const result = listHelper.mostBlogs(listWithManyBlogs);
+    expect(result).toEqual({ author: "Robert C. Martin", blogs: 3 });
   });
 });
