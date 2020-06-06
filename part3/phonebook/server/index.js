@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
 
-morgan.token("data", (req, res) => JSON.stringify(req.body));
+morgan.token("data", (req) => JSON.stringify(req.body));
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :data")
 );
@@ -81,7 +81,7 @@ app.put("/api/persons/:id", (req, res, next) => {
 
 app.delete("/api/persons/:id", (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then((person) => res.status(204).end())
+    .then(() => res.status(204).end())
     .catch((err) => next(err));
 });
 
@@ -90,7 +90,7 @@ const unknownEndpoint = (req, res) => {
 };
 app.use(unknownEndpoint);
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res) => {
   console.error(err.message);
 
   if (err.name === "CastError") {
