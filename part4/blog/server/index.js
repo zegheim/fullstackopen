@@ -1,39 +1,10 @@
-require("dotenv").config();
+const app = require("./app");
+const http = require("http");
+const config = require("./utils/config");
+const logger = require("./utils/logger");
 
-const cors = require("cors");
-const express = require("express");
-const mongoose = require("mongoose");
+const server = http.createServer(app);
 
-const app = express();
-
-const blogSchema = mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number,
+server.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.port}`);
 });
-
-const Blog = mongoose.model("Blog", blogSchema);
-
-const mongoUrl = process.env.MONGODB_URI;
-
-mongoose
-  .connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("connected to MongoDB"))
-  .catch((e) => console.log("error connecting to MongoDB", e.message));
-
-app.use(cors());
-app.use(express.json());
-
-app.get("/api/blogs", (req, res) => {
-  Blog.find({}).then((blogs) => res.json(blogs));
-});
-
-app.post("/api/blogs", (req, res) => {
-  const blog = new Blog(req.body);
-
-  blog.save().then((result) => res.status(201).json(result));
-});
-
-const PORT = 3003;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
