@@ -2,38 +2,30 @@ const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 
+const blogsRouter = require("./controllers/blogs");
 const config = require("./utils/config");
 const logger = require("./utils/logger");
+const middleware = require("./utils/middleware");
 
 const app = express();
 
-const blogSchema = mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number,
-});
-
-const Blog = mongoose.model("Blog", blogSchema);
-
-const mongoUrl = process.env.MONGODB_URI;
+logger.info("connecting to", config.MONGODB_URI);
 
 mongoose
-  .connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(config.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("connected to MongoDB"))
-  .catch((e) => console.log("error connecting to MongoDB", e.message));
+  .catch((err) => console.log("error connecting to MongoDB", err.message));
 
 app.use(cors());
 app.use(express.json());
+app.use(middleware.requestLogger);
 
-app.get("/api/blogs", (req, res) => {
-  Blog.find({}).then((blogs) => res.json(blogs));
-});
+app.use("/api/blogs", blogsRouter);
 
-app.post("/api/blogs", (req, res) => {
-  const blog = new Blog(req.body);
-
-  blog.save().then((result) => res.status(201).json(result));
-});
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;

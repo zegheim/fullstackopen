@@ -4,6 +4,5 @@ Content-Type: application/json
 {
     "title": "Hello world",
     "author": "Justin Arista Kasin",
-    "url": "localhost:3000",
-    "likes": 1
+    "url": "localhost:3000"
 }
