@@ -69,4 +69,21 @@ test("no. of likes in a blog defaults to 0", async () => {
   expect(res.body.likes).toBe(0);
 });
 
+test("blog without title and url is not added", async () => {
+  const blogWithoutTitle = {
+    author: "Michael Chan",
+    url: "https://expresspatterns.com/",
+  };
+  const blogWithoutUrl = {
+    title: "Express patterns",
+    author: "Michael Chan",
+  };
+
+  await api.post("/api/blogs").send(blogWithoutTitle).expect(400);
+  await api.post("/api/blogs").send(blogWithoutUrl).expect(400);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+});
+
 afterAll(() => mongoose.connection.close());
