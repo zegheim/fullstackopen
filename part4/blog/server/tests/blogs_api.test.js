@@ -14,13 +14,25 @@ beforeEach(async () => {
   await Promise.all(deletePromises);
 
   const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
-  const passwordHash = await bcrypt.hash("sekret", saltRounds);
-  const user = new User({ username: "root", passwordHash });
-  await user.save();
+  const hashPromises = helper.initialUsers.map((user) =>
+    bcrypt.hash(user.password, saltRounds)
+  );
+  const passwordHashes = await Promise.all(hashPromises);
+
+  const userObjects = helper.initialUsers.map(
+    (user, idx) =>
+      new User({
+        username: user.username,
+        name: user.name,
+        passwordHash: passwordHashes[idx],
+      })
+  );
+  const initUserPromises = userObjects.map((user) => user.save());
+  await Promise.all(initUserPromises);
 
   const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-  const promiseArray = blogObjects.map((blog) => blog.save());
-  await Promise.all(promiseArray);
+  const initBlogPromises = blogObjects.map((blog) => blog.save());
+  await Promise.all(initBlogPromises);
 });
 
 describe("when there is initially some blogs saved", () => {
@@ -151,7 +163,6 @@ describe("updating no. of likes in a blog", () => {
 describe("creation of a new user", () => {
   test("succeeds with valid data", async () => {
     const usersAtStart = await helper.usersInDb();
-
     const newUser = {
       username: "mluukkai",
       name: "Matti Luukkainen",

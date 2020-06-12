@@ -55,6 +55,19 @@ const initialBlogs = [
   },
 ];
 
+const initialUsers = [
+  {
+    username: "root",
+    name: "superuser",
+    password: "sekret",
+  },
+  {
+    username: "zegheim",
+    name: "Justin Arista Kasin",
+    password: "notsosekret",
+  },
+];
+
 const invalidId = "5a3d5da59070081a82a3445";
 
 const nonExistingId = async () => {
@@ -77,6 +90,7 @@ const usersInDb = async () => {
 
 module.exports = {
   initialBlogs,
+  initialUsers,
   invalidId,
   nonExistingId,
   blogsInDb,
