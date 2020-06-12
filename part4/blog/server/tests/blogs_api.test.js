@@ -58,17 +58,18 @@ describe("when there is initially some blogs saved", () => {
   });
 });
 
-describe("addition of a new blog", () => {
+describe.only("addition of a new blog", () => {
   test("succeeds with valid data", async () => {
+    const header = await helper.authHeader();
     const newBlog = {
       title: "Express patterns",
       author: "Michael Chan",
       url: "https://expresspatterns.com/",
       likes: 7,
     };
-
     await api
       .post("/api/blogs")
+      .set("Authorization", header)
       .send(newBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/);
@@ -82,28 +83,42 @@ describe("addition of a new blog", () => {
   });
 
   test("defaults to 0 likes if not specified", async () => {
+    const header = await helper.authHeader();
     const blogWithoutLikes = {
       title: "Express patterns",
       author: "Michael Chan",
       url: "https://expresspatterns.com/",
     };
 
-    const res = await api.post("/api/blogs").send(blogWithoutLikes);
+    const res = await api
+      .post("/api/blogs")
+      .set("Authorization", header)
+      .send(blogWithoutLikes);
     expect(res.body.likes).toBe(0);
   });
 
   test("fails with status code 400 if data is invalid", async () => {
+    const header = await helper.authHeader();
+
     const blogWithoutTitle = {
       author: "Michael Chan",
       url: "https://expresspatterns.com/",
     };
+    await api
+      .post("/api/blogs")
+      .set("Authorization", header)
+      .send(blogWithoutTitle)
+      .expect(400);
+
     const blogWithoutUrl = {
       title: "Express patterns",
       author: "Michael Chan",
     };
-
-    await api.post("/api/blogs").send(blogWithoutTitle).expect(400);
-    await api.post("/api/blogs").send(blogWithoutUrl).expect(400);
+    await api
+      .post("/api/blogs")
+      .set("Authorization", header)
+      .send(blogWithoutUrl)
+      .expect(400);
 
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
