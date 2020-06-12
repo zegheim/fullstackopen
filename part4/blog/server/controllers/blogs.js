@@ -9,24 +9,16 @@ blogsRouter.get("/", async (req, res) => {
   res.json(blogs);
 });
 
-const getTokenFrom = (req) => {
-  const auth = req.get("authorization");
-  if (auth && auth.toLowerCase().startsWith("bearer ")) {
-    return auth.substring(7);
-  }
-  return null;
-};
-
 blogsRouter.post("/", async (req, res) => {
   const body = req.body;
 
-  const token = getTokenFrom(req);
+  const token = req.token;
   const decodedToken = jwt.verify(token, process.env.SECRET);
   if (!(token && decodedToken.id)) {
     return res.status(401).json({ error: "token missing or invalid" });
   }
-  const user = await User.findById(decodedToken.id);
 
+  const user = await User.findById(decodedToken.id);
   const blog = new Blog({
     title: body.title,
     author: body.author,
