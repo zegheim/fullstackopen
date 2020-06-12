@@ -54,8 +54,10 @@ const initialBlogs = [
   },
 ];
 
+const invalidId = "5a3d5da59070081a82a3445";
+
 const nonExistingId = async () => {
-  const blog = new Blog({ title: "willremovethissoon" });
+  const blog = new Blog({ title: "willremovethissoon", url: "localhost:3000" });
   await blog.save();
   await blog.remove();
 
@@ -67,4 +69,4 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
-module.exports = { initialBlogs, nonExistingId, blogsInDb };
+module.exports = { initialBlogs, invalidId, nonExistingId, blogsInDb };

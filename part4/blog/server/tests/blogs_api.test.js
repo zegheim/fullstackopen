@@ -90,4 +90,28 @@ describe("addition of a new blog", () => {
   });
 });
 
+describe("deletion of a blog", () => {
+  test("succeeds with status code 204 if blog exists", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+
+    const titles = blogsAtEnd.map((r) => r.title);
+    expect(titles).not.toContain(blogToDelete.title);
+  });
+
+  test("fails with status code 404 if id does not exist", async () => {
+    const validNonExistingId = await helper.nonExistingId();
+    await api.get(`/api/notes/${validNonExistingId}`).expect(404);
+  });
+
+  test("fails with status code 404 if id is invalid", async () => {
+    await api.get(`/api/blogs/${helper.invalidId}`).expect(404);
+  });
+});
+
 afterAll(() => mongoose.connection.close());
