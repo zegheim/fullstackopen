@@ -58,7 +58,7 @@ describe("when there is initially some blogs saved", () => {
   });
 });
 
-describe.only("addition of a new blog", () => {
+describe("addition of a new blog", () => {
   test("succeeds with valid data", async () => {
     const header = await helper.authHeader();
     const newBlog = {
@@ -123,10 +123,25 @@ describe.only("addition of a new blog", () => {
     const blogsAtEnd = await helper.blogsInDb();
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
   });
+
+  test("fails with status code 401 if no token", async () => {
+    const newBlog = {
+      title: "Express patterns",
+      author: "Michael Chan",
+      url: "https://expresspatterns.com/",
+      likes: 7,
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(401);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  });
 });
 
-describe("deletion of a blog", () => {
+describe.only("deletion of a blog", () => {
   test("succeeds with status code 204 if blog exists", async () => {
+    const header = await helper.authHeader();
     const blogsAtStart = await helper.blogsInDb();
     const blogToDelete = blogsAtStart[0];
 
