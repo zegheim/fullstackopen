@@ -24,8 +24,16 @@ test("blogs are returned as json", async () => {
 
 test("all blogs are returned", async () => {
   const res = await api.get("/api/blogs");
-
   expect(res.body).toHaveLength(helper.initialBlogs.length);
+});
+
+test("uid property of each blog is called `id`", async () => {
+  const res = await api.get("/api/blogs");
+  const allIdExists = res.body.reduce(
+    (acc, curr) => acc && curr.id !== undefined,
+    true
+  );
+  expect(allIdExists).toBe(true);
 });
 
 afterAll(() => mongoose.connection.close());
