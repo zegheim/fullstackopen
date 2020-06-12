@@ -139,9 +139,8 @@ describe("addition of a new blog", () => {
   });
 });
 
-describe.only("deletion of a blog", () => {
+describe("deletion of a blog", () => {
   test("succeeds with status code 204 if blog exists", async () => {
-    const header = await helper.authHeader();
     const blogsAtStart = await helper.blogsInDb();
     const blogToDelete = blogsAtStart[0];
 
