@@ -15,75 +15,79 @@ beforeEach(async () => {
   await Promise.all(promiseArray);
 });
 
-test("blogs are returned as json", async () => {
-  await api
-    .get("/api/blogs")
-    .expect(200)
-    .expect("Content-Type", /application\/json/);
+describe("when there is initially some blogs saved", () => {
+  test("blogs are returned as json", async () => {
+    await api
+      .get("/api/blogs")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+  });
+
+  test("all blogs are returned", async () => {
+    const res = await api.get("/api/blogs");
+    expect(res.body).toHaveLength(helper.initialBlogs.length);
+  });
+
+  test("uid property of each blog is named `id`", async () => {
+    const res = await api.get("/api/blogs");
+    const allIdExists = res.body.reduce(
+      (acc, curr) => acc && curr.id !== undefined,
+      true
+    );
+    expect(allIdExists).toBe(true);
+  });
 });
 
-test("all blogs are returned", async () => {
-  const res = await api.get("/api/blogs");
-  expect(res.body).toHaveLength(helper.initialBlogs.length);
-});
+describe("addition of a new blog", () => {
+  test("succeeds with valid data", async () => {
+    const newBlog = {
+      title: "Express patterns",
+      author: "Michael Chan",
+      url: "https://expresspatterns.com/",
+      likes: 7,
+    };
 
-test("uid property of each blog is called `id`", async () => {
-  const res = await api.get("/api/blogs");
-  const allIdExists = res.body.reduce(
-    (acc, curr) => acc && curr.id !== undefined,
-    true
-  );
-  expect(allIdExists).toBe(true);
-});
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
 
-test("a valid blog can be added", async () => {
-  const newBlog = {
-    title: "Express patterns",
-    author: "Michael Chan",
-    url: "https://expresspatterns.com/",
-    likes: 7,
-  };
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 
-  await api
-    .post("/api/blogs")
-    .send(newBlog)
-    .expect(201)
-    .expect("Content-Type", /application\/json/);
+    expect(blogsAtEnd).toEqual(
+      expect.arrayContaining([expect.objectContaining(newBlog)])
+    );
+  });
 
-  const blogsAtEnd = await helper.blogsInDb();
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+  test("defaults to 0 likes if not specified", async () => {
+    const blogWithoutLikes = {
+      title: "Express patterns",
+      author: "Michael Chan",
+      url: "https://expresspatterns.com/",
+    };
 
-  expect(blogsAtEnd).toEqual(
-    expect.arrayContaining([expect.objectContaining(newBlog)])
-  );
-});
+    const res = await api.post("/api/blogs").send(blogWithoutLikes);
+    expect(res.body.likes).toBe(0);
+  });
 
-test("no. of likes in a blog defaults to 0", async () => {
-  const blogWithoutLikes = {
-    title: "Express patterns",
-    author: "Michael Chan",
-    url: "https://expresspatterns.com/",
-  };
+  test("fails with status code 400 if data is invalid", async () => {
+    const blogWithoutTitle = {
+      author: "Michael Chan",
+      url: "https://expresspatterns.com/",
+    };
+    const blogWithoutUrl = {
+      title: "Express patterns",
+      author: "Michael Chan",
+    };
 
-  const res = await api.post("/api/blogs").send(blogWithoutLikes);
-  expect(res.body.likes).toBe(0);
-});
+    await api.post("/api/blogs").send(blogWithoutTitle).expect(400);
+    await api.post("/api/blogs").send(blogWithoutUrl).expect(400);
 
-test("blog without title and url is not added", async () => {
-  const blogWithoutTitle = {
-    author: "Michael Chan",
-    url: "https://expresspatterns.com/",
-  };
-  const blogWithoutUrl = {
-    title: "Express patterns",
-    author: "Michael Chan",
-  };
-
-  await api.post("/api/blogs").send(blogWithoutTitle).expect(400);
-  await api.post("/api/blogs").send(blogWithoutUrl).expect(400);
-
-  const blogsAtEnd = await helper.blogsInDb();
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+  });
 });
 
 afterAll(() => mongoose.connection.close());
