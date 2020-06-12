@@ -36,4 +36,27 @@ test("uid property of each blog is called `id`", async () => {
   expect(allIdExists).toBe(true);
 });
 
+test("a valid blog can be added", async () => {
+  const newBlog = {
+    title: "Express patterns",
+    author: "Michael Chan",
+    url: "https://expresspatterns.com/",
+    likes: 7,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  // hello
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+
+  expect(blogsAtEnd).toEqual(
+    expect.arrayContaining([expect.objectContaining(newBlog)])
+  );
+});
+
 afterAll(() => mongoose.connection.close());
