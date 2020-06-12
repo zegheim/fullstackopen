@@ -106,11 +106,37 @@ describe("deletion of a blog", () => {
 
   test("fails with status code 404 if id does not exist", async () => {
     const validNonExistingId = await helper.nonExistingId();
-    await api.get(`/api/notes/${validNonExistingId}`).expect(404);
+    await api.delete(`/api/notes/${validNonExistingId}`).expect(404);
   });
 
-  test("fails with status code 404 if id is invalid", async () => {
-    await api.get(`/api/blogs/${helper.invalidId}`).expect(404);
+  test("fails with status code 400 if id is invalid", async () => {
+    await api.delete(`/api/blogs/${helper.invalidId}`).expect(400);
+  });
+});
+
+describe("updating no. of likes in a blog", () => {
+  const newLike = { likes: 99 };
+
+  test("succeeds if blog exists", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+
+    const res = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(newLike)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    expect(res.body.likes).toBe(newLike.likes);
+  });
+
+  test("fails with status code 404 if id does not exist", async () => {
+    const validNonExistingId = await helper.nonExistingId();
+    await api.put(`/api/notes/${validNonExistingId}`).send(newLike).expect(404);
+  });
+
+  test("fails with status code 400 if id is invalid", async () => {
+    await api.put(`/api/blogs/${helper.invalidId}`).send(newLike).expect(400);
   });
 });
 
