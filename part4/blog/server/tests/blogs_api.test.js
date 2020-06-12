@@ -50,13 +50,23 @@ test("a valid blog can be added", async () => {
     .expect(201)
     .expect("Content-Type", /application\/json/);
 
-  // hello
   const blogsAtEnd = await helper.blogsInDb();
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 
   expect(blogsAtEnd).toEqual(
     expect.arrayContaining([expect.objectContaining(newBlog)])
   );
+});
+
+test("no. of likes in a blog defaults to 0", async () => {
+  const blogWithoutLikes = {
+    title: "Express patterns",
+    author: "Michael Chan",
+    url: "https://expresspatterns.com/",
+  };
+
+  const res = await api.post("/api/blogs").send(blogWithoutLikes);
+  expect(res.body.likes).toBe(0);
 });
 
 afterAll(() => mongoose.connection.close());
